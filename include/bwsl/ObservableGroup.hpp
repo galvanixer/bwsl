@@ -124,6 +124,7 @@ ObservableGroup<Index_t>::PrintHeaders() const
   while (++it != accumulator_.end()) {
     fmt::print(out, ",{}", it->first);
   }
+  fmt::print(out, ",Count");
   fmt::print(out, "\n");
 }
 
@@ -132,14 +133,15 @@ inline void
 ObservableGroup<Index_t>::PrintAndReset(size_t precision)
 {
   auto out = std::ofstream(output_file_.c_str(), std::ios::app);
-
   auto it = accumulator_.begin();
+  auto count = it->second.Count();
   fmt::print(out, "{:.{}e}", it->second.Mean(), precision);
   it->second.Reset();
   while (++it != accumulator_.end()) {
     fmt::print(out, ",{:.{}e}", it->second.Mean(), precision);
     it->second.Reset();
   }
+  fmt::print(out, ",{}", count);
   fmt::print(out, "\n");
 }
 
