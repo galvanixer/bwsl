@@ -133,6 +133,9 @@ public:
   /// Save the distances on a file
   auto SavePairs(const std::string& fname) const -> void;
 
+  /// Save the distances on a file
+  auto SaveTriples(const std::string& fname) const -> void;
+
 protected:
   /// Compute the positions of all the lattice points
   /// NOTE: the positions stored are in real space.
@@ -533,6 +536,57 @@ Lattice::SavePairs(std::string const& fname) const -> void
 
     fmt::print(out, "\n");
   }
+}
+
+inline auto
+Lattice::SaveTriples(std::string const& fname) const -> void
+{
+    auto out = std::ofstream{ fname.c_str() };
+
+    fmt::print(out, "i,a,b,c");
+
+    auto nsites   = GetNumSites();
+    auto ntriples = nsites * nsites * nsites;  // MUST match indexing scheme
+
+    // Coordinates for each site
+    for (auto i = 0UL; i < GetDim(); i++) fmt::print(out, ",ax{}", i);
+    for (auto i = 0UL; i < GetDim(); i++) fmt::print(out, ",bx{}", i);
+    for (auto i = 0UL; i < GetDim(); i++) fmt::print(out, ",cx{}", i);
+
+    // Relative vectors a→b, a→c, b→c
+    for (auto i = 0UL; i < GetDim(); i++) fmt::print(out, ",d_ab_{}", i);
+    for (auto i = 0UL; i < GetDim(); i++) fmt::print(out, ",d_ac_{}", i);
+    for (auto i = 0UL; i < GetDim(); i++) fmt::print(out, ",d_bc_{}", i);
+
+    fmt::print(out, "\n");
+
+    for (std::size_t idx = 0; idx < ntriples; idx++)
+    {
+        // Matches EXACTLY your GetTriple definition
+        auto [a, b, c] = bwsl::pairs::GetTriple(idx, nsites);
+
+        fmt::print(out, "{},{},{},{}", idx, a, b, c);
+
+        // Coordinates at sites a, b, c
+        auto va = GetVector(0, a);
+        auto vb = GetVector(0, b);
+        auto vc = GetVector(0, c);
+
+        for (auto const& v : va) fmt::print(out, ",{}", v);
+        for (auto const& v : vb) fmt::print(out, ",{}", v);
+        for (auto const& v : vc) fmt::print(out, ",{}", v);
+
+        // Relative vectors
+        auto vab = GetVector(a, b);
+        auto vac = GetVector(a, c);
+        auto vbc = GetVector(b, c);
+
+        for (auto const& v : vab) fmt::print(out, ",{}", v);
+        for (auto const& v : vac) fmt::print(out, ",{}", v);
+        for (auto const& v : vbc) fmt::print(out, ",{}", v);
+
+        fmt::print(out, "\n");
+    }
 }
 
 inline auto
