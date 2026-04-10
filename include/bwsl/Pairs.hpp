@@ -35,6 +35,16 @@ GetPairIndex(std::size_t a, std::size_t b, std::size_t maxval) -> std::size_t
 }
 
 ///
+/// Get the index of a triple from the values of the three single indices
+///
+inline auto
+GetTripleIndex(std::size_t a, std::size_t b, std::size_t c, std::size_t maxval) -> std::size_t
+{
+  auto i = c * maxval * maxval + b * maxval + a;
+  return i;
+}
+
+///
 /// Get the index of the pair from the pair of indices
 ///
 inline auto
@@ -44,6 +54,18 @@ GetPairIndex(const std::pair<std::size_t, std::size_t> pair,
   return GetPairIndex(pair.first, pair.second, maxval);
 }
 
+
+///
+/// Get a triple of indices from the index of the triple
+///
+inline auto
+GetTriple(std::size_t i, const std::size_t maxval)
+  -> std::tuple<std::size_t, std::size_t, std::size_t>
+{
+  return std::make_tuple(i % maxval,
+                         (i / maxval) % maxval,
+                         i / (maxval * maxval));
+}
 ///
 /// Get a pair of indices from the index of the pair
 ///
