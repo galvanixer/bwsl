@@ -63,6 +63,16 @@ GetNumPairs(std::size_t maxval) -> std::size_t
   return square(maxval);
 }
 
+///
+/// Get the number of indices of triples of unsigned values
+///
+inline auto
+GetNumTriples(std::size_t maxval) -> std::size_t
+{
+  return cube(maxval);
+}
+
+
 } // namespace bwsl::pairs
 
 // vim: set ft=cpp ts=2 sts=2 et sw=2 tw=80: //
